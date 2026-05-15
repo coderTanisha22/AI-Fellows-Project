@@ -16,7 +16,7 @@ export function AIExplanation() {
 
     const loadInsight = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/insight");
+        const response = await fetch("/insight");
         const result: Insight = await response.json();
 
         if (isMounted) {

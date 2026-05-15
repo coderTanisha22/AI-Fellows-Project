@@ -17,7 +17,7 @@ export function ActivityChart() {
 
     const loadActivity = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/activity");
+        const response = await fetch("/activity");
         const result: ActivityResponse = await response.json();
 
         if (!isMounted) {

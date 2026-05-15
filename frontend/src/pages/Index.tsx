@@ -21,7 +21,7 @@ function DashboardContent() {
 
     const loadStatus = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/activity?role=${role}`);
+        const response = await fetch(`/activity?role=${role}`);
         const result: ActivityResponse = await response.json();
 
         if (isMounted) {

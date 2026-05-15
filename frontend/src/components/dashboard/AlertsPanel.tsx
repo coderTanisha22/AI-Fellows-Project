@@ -25,7 +25,7 @@ export function AlertsPanel() {
 
   const loadAlerts = useCallback(async (isMounted = true) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/alerts?role=${role}`);
+      const response = await fetch(`/alerts?role=${role}`);
       const result: Alert[] = await response.json();
 
       if (isMounted) {
@@ -52,7 +52,7 @@ export function AlertsPanel() {
 
   const handleAction = async (id: number, action: "approve" | "reject") => {
     try {
-      await fetch("http://127.0.0.1:8000/alerts/action", {
+      await fetch("/alerts/action", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +69,7 @@ export function AlertsPanel() {
   const handleSeedDemoAlert = async () => {
     try {
       setSeedingDemo(true);
-      await fetch(`http://127.0.0.1:8000/alerts/demo/seed?role=${role}`, {
+      await fetch(`/alerts/demo/seed?role=${role}`, {
         method: "POST",
       });
       await loadAlerts(true);

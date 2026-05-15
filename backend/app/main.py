@@ -1,8 +1,11 @@
 from contextlib import asynccontextmanager
 import logging
+import os
+from pathlib import Path
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from .api.router import router
 from .services.gemini_client import log_gemini_startup_status
@@ -31,15 +34,30 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+# CORS configuration - allow all origins for demo
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8080",
-        "http://127.0.0.1:8080",
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 app.include_router(router)
+
+# Serve frontend static files
+frontend_dist = Path(__file__).parent.parent.parent / "frontend" / "dist"
+if frontend_dist.exists():
+    app.mount("/assets", StaticFiles(directory=frontend_dist / "assets"), name="assets")
+    
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        """Serve SPA - fallback to index.html for all routes"""
+        file_path = frontend_dist / full_path
+        if file_path.exists() and file_path.is_file():
+            return {"file": str(file_path)}
+        # Return index.html for all routes (SPA routing)
+        index_html = frontend_dist / "index.html"
+        if index_html.exists():
+            return {"file": str(index_html)}
+        return {"error": "Frontend not built. Run: cd frontend && npm run build"}
