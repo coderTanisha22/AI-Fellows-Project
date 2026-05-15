@@ -6,6 +6,7 @@ from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from .api.router import router
 from .services.gemini_client import log_gemini_startup_status
@@ -55,9 +56,11 @@ if frontend_dist.exists():
         """Serve SPA - fallback to index.html for all routes"""
         file_path = frontend_dist / full_path
         if file_path.exists() and file_path.is_file():
-            return {"file": str(file_path)}
+            return FileResponse(file_path)
         # Return index.html for all routes (SPA routing)
         index_html = frontend_dist / "index.html"
         if index_html.exists():
-            return {"file": str(index_html)}
+            return FileResponse(index_html, media_type="text/html")
         return {"error": "Frontend not built. Run: cd frontend && npm run build"}
+else:
+    logger.warning(f"Frontend dist not found at {frontend_dist}. SPA routes will not be served.")
