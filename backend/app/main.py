@@ -11,6 +11,7 @@ from fastapi.responses import FileResponse
 from .api.router import router
 from .services.gemini_client import log_gemini_startup_status
 from .services.simulator import simulator
+from .db.database import init_db
 
 logging.basicConfig(
     level=logging.INFO,
@@ -22,6 +23,13 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Starting Intelligent Care Assistant backend")
+    
+    # Initialize database
+    try:
+        init_db()
+    except Exception as e:
+        logger.error(f"Failed to initialize database: {e}")
+    
     log_gemini_startup_status()
     await simulator.start()
     logger.info("IoT simulator started")
@@ -35,10 +43,23 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-# CORS configuration - allow all origins for demo
+# CORS configuration - restricted to safe origins
+allowed_origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://localhost:8000",
+    "http://localhost:8080",
+    "https://ai-fellows-project.onrender.com",
+    os.getenv("FRONTEND_URL", ""),
+]
+
+# Remove empty strings
+allowed_origins = [origin for origin in allowed_origins if origin]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
