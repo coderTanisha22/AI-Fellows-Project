@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Header
 from pydantic import BaseModel, Field
 from typing import Optional
 import uuid
@@ -13,6 +14,12 @@ from ..services.alert_service import (
 )
 from ..services.gemini_client import get_gemini_runtime_status
 from ..services.simulator import simulator
+from ..services.auth_service import (
+    authenticate_user,
+    generate_session_token,
+    validate_session_token,
+    get_demo_user,
+)
 
 router = APIRouter()
 
@@ -36,6 +43,18 @@ class InsightRequest(BaseModel):
     days_back: int = Field(default=1, ge=1, le=30)
 
 
+# ============ AUTH MODELS ============
+
+class LoginRequest(BaseModel):
+    email: str = Field(..., description="User email")
+    password: str = Field(..., description="User password")
+
+
+class LoginResponse(BaseModel):
+    token: str
+    user: dict
+
+
 # ============ ROUTES ============
 
 def validate_role(role: str) -> str:
@@ -48,6 +67,59 @@ def validate_role(role: str) -> str:
             detail=f"Invalid role. Must be one of: {valid_roles}"
         )
     return role
+
+
+# ============ AUTH ENDPOINTS ============
+
+@router.post("/auth/login")
+def login(request: LoginRequest):
+    """Authenticate user and return session token"""
+    try:
+        user = authenticate_user(request.email, request.password)
+        if not user:
+            raise HTTPException(
+                status_code=401,
+                detail="Invalid email or password"
+            )
+        
+        token = generate_session_token(user["id"])
+        return {
+            "token": token,
+            "user": user
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/auth/current-user")
+def get_current_user(authorization: str = Header(None)):
+    """Get current authenticated user"""
+    try:
+        if not authorization:
+            # Return demo user for unauthenticated access
+            return get_demo_user("caregiver")
+        
+        # Extract token from "Bearer <token>"
+        parts = authorization.split(" ")
+        if len(parts) != 2 or parts[0] != "Bearer":
+            return get_demo_user("caregiver")
+        
+        token = parts[1]
+        user = validate_session_token(token)
+        if not user:
+            return get_demo_user("caregiver")
+        
+        return user
+    except Exception:
+        return get_demo_user("caregiver")
+
+
+@router.post("/auth/logout")
+def logout():
+    """Logout current user"""
+    return {"success": True, "message": "Logged out successfully"}
 
 
 @router.get("/activity")
