@@ -12,6 +12,10 @@ An **AI-powered elderly care monitoring system** that detects behavioral anomali
 📦 **GitHub:** https://github.com/coderTanisha22/AI-Fellows-Project  
 ⚡ **Tech Stack:** FastAPI • React • SQLite • Gemini AI • Docker
 
+### Quick Open
+
+[Open the live demo now](https://ai-fellows-project.onrender.com) — best viewed on desktop.
+
 ---
 
 ## 🎯 The Problem & Solution
@@ -375,11 +379,6 @@ Add new pages in `frontend/src/pages/` and route in `frontend/src/App.tsx`
 
 ---
 
-## 📝 License
-
-MIT - See [LICENSE](LICENSE) file
-
----
 
 ## 🤝 Support
 
@@ -432,5 +431,4 @@ MIT - See [LICENSE](LICENSE) file
 
 Made with ❤️ for elder care.
 
-*Last Updated: January 2025*
 
