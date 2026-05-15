@@ -1,0 +1,26 @@
+[
+  {
+    "id": "user_caregiver_001",
+    "name": "Sarah Johnson",
+    "email": "sarah@example.com",
+    "role": "caregiver",
+    "resident_id": "resident_001",
+    "password": "password123"
+  },
+  {
+    "id": "user_supervisor_001",
+    "name": "Dr. Michael Chen",
+    "email": "michael@example.com",
+    "role": "supervisor",
+    "resident_id": "resident_001",
+    "password": "password123"
+  },
+  {
+    "id": "user_family_001",
+    "name": "Emily Johnson",
+    "email": "emily@example.com",
+    "role": "family",
+    "resident_id": "resident_001",
+    "password": "password123"
+  }
+]

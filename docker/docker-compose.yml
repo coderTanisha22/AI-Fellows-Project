@@ -1,25 +1,23 @@
-version: '3.9'
-
 services:
   # FastAPI Backend
   backend:
     build:
-      context: .
+      context: ..
       dockerfile: docker/Dockerfile
     container_name: caring-ai-backend
     ports:
-      - "8000:8000"
+      - "8001:8000"
     environment:
       - PORT=8000
       - DATABASE_URL=sqlite:///./caring_ai.db
       - GEMINI_ENABLED=false
       - PYTHONUNBUFFERED=1
     volumes:
-      - ./backend:/app/backend
-      - ./caring_ai.db:/app/caring_ai.db
+      - ../backend:/app/backend
+      - ../caring_ai.db:/app/caring_ai.db
     command: python backend/main.py
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 30s
       timeout: 10s
       retries: 3

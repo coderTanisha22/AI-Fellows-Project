@@ -1,7 +1,7 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { RoleContext } from '@/contexts/RoleContext';
+import { useRole } from '@/contexts/RoleContext';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,7 +22,7 @@ interface Settings {
 }
 
 export default function SettingsPage() {
-  const { role, userName } = useContext(RoleContext);
+  const { role, userName } = useRole();
   const [settings, setSettings] = useState<Settings>({
     alertThreshold: 0.7,
     notificationsEnabled: true,

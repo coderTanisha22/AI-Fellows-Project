@@ -1,6 +1,6 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { RoleContext } from '@/contexts/RoleContext';
+import { useRole } from '@/contexts/RoleContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { BarChart, Bar } from 'recharts';
 
@@ -18,7 +18,7 @@ interface ActivityStats {
 }
 
 export default function ActivityPage() {
-  const { role } = useContext(RoleContext);
+  const { role } = useRole();
   const [stats, setStats] = useState<ActivityStats>({
     hourly: [],
     byType: [],

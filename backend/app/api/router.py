@@ -305,10 +305,11 @@ async def stop_simulation():
 @router.get("/health")
 def health_check():
     """Health check endpoint"""
+    sim_status = simulator.status()
     return {
         "status": "healthy",
         "timestamp": datetime.utcnow(),
-        "simulator_running": simulator.is_running()
+        "simulator_running": sim_status.get("running", False)
     }
 
 

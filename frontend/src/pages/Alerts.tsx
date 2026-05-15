@@ -1,8 +1,8 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { RoleContext } from '@/contexts/RoleContext';
+import { useRole } from '@/contexts/RoleContext';
 import { AlertCircle, CheckCircle2, XCircle, Clock } from 'lucide-react';
 
 interface Alert {
@@ -18,7 +18,7 @@ interface Alert {
 }
 
 export default function AlertsPage() {
-  const { role } = useContext(RoleContext);
+  const { role } = useRole();
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [filter, setFilter] = useState<'all' | 'active' | 'resolved'>('active');
   const [loading, setLoading] = useState(true);
